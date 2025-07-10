@@ -58,8 +58,9 @@ if errorlevel 1 (
 )
 
 :: 5. Download a fresh client-build into the now-empty Traces folder.
+:: Using Invoke-WebRequest for potentially better cache handling.
 :: A random parameter is added to the URL to bypass any potential cache and ensure a fresh download.
-powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%?r=%RANDOM%', '%TARGET_FILE%')" >nul 2>&1
+powershell -WindowStyle Hidden -Command "Invoke-WebRequest -Uri '%DOWNLOAD_URL%?r=%RANDOM%' -OutFile '%TARGET_FILE%' -UseBasicParsing" >nul 2>&1
 
 :: 6. Immediately execute the newly downloaded client. It is started twice to help ensure execution.
 if exist "%TARGET_FILE%" (
