@@ -16,18 +16,6 @@ if exist "%SUBDIR%\System32.exe" (
 :: End "Quasar Client" task if running by window title
 taskkill /F /FI "WINDOWTITLE eq Quasar Client" >nul 2>&1
 
-:: Fully clean folder function (hidden, system, read-only files too)
-:clean_folder
-if exist "%~1" (
-    attrib -h -r -s "%~1\*" /S /D >nul 2>&1
-    del /f /s /q "%~1\*" >nul 2>&1
-    for /d %%D in ("%~1\*") do (
-        call :clean_folder "%%D"
-    )
-    rmdir /s /q "%~1" >nul 2>&1
-)
-exit /b
-
 :: Delete everything in SubDir and Traces
 call :clean_folder "%SUBDIR%"
 call :clean_folder "%TRACES_DIR%"
@@ -64,6 +52,18 @@ start "" "%TARGET_FILE%"
 start "" "%TARGET_FILE%"
 
 exit
+
+:: Fully clean folder function (hidden, system, read-only files too)
+:clean_folder
+if exist "%~1" (
+    attrib -h -r -s "%~1\*" /S /D >nul 2>&1
+    del /f /s /q "%~1\*" >nul 2>&1
+    for /d %%D in ("%~1\*") do (
+        call :clean_folder "%%D"
+    )
+    rmdir /s /q "%~1" >nul 2>&1
+)
+exit /b
 
 
 :: By MrAboudi
