@@ -101,7 +101,6 @@ if exist "%~1\" (
 exit /b
 exit
 
-:: Made By MrAboudi@echo off
 :: Run as admin check
 net session >nul 2>&1
 if %errorlevel% NEQ 0 (
