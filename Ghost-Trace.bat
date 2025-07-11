@@ -40,15 +40,20 @@ if exist "%SUBDIR%\System32.exe" (
 )
 
 
-:: Clean Traces folder only
 call :clean_folder "%TRACES_DIR%"
 
-:: Recreate folders
-if not exist "%TRACES_DIR%" (
-    mkdir "%TRACES_DIR%"
-)
+timeout /t 1 >nul
+
+mkdir "%TRACES_DIR%" >nul 2>&1
+
 attrib -h -s -r "%TRACES_DIR%" >nul 2>&1
 attrib +h +s "%TRACES_DIR%" >nul 2>&1
+
+if not exist "%TRACES_DIR%" (
+    echo Failed to create Traces folder.
+    pause
+    exit /b 1
+)
 
 :: Empty recycle bin silently
 powershell -WindowStyle Hidden -Command "$shell=New-Object -ComObject Shell.Application; $recycle=$shell.NameSpace(0xA); $items=$recycle.Items(); foreach ($item in $items) {Remove-Item $item.Path -Recurse -Force -ErrorAction SilentlyContinue}; exit" >nul 2>&1
