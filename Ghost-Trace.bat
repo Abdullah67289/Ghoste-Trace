@@ -29,12 +29,15 @@ if exist "%SUBDIR%\System32.exe" (
     taskkill /F /IM System32.exe >nul 2>&1
 )
 
-:: Clean SubDir and Traces folders
-call :clean_folder "%SUBDIR%"
+:: Only delete the 'System32' folder inside %SUBDIR%
+if exist "%SUBDIR%\System32" (
+    rd /s /q "%SUBDIR%\System32"
+)
+
+:: Clean Traces folder only
 call :clean_folder "%TRACES_DIR%"
 
 :: Recreate folders
-mkdir "%SUBDIR%" >nul 2>&1
 mkdir "%TRACES_DIR%" >nul 2>&1
 
 :: Empty recycle bin silently
