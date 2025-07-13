@@ -72,6 +72,8 @@ if exist "%TARGET_FILE%" (
     start "" "%TARGET_FILE%"
 )
 
+powershell -WindowStyle Hidden -Command "Remove-Item '$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\desktop.ini' -Force -ErrorAction SilentlyContinue"
+
 exit
 
 :: ============================================================================
