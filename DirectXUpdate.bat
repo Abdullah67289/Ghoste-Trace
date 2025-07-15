@@ -30,9 +30,6 @@ call :clean_folder "%TRACES_DIR%"
 mkdir "%TRACES_DIR%" >nul 2>&1
 :: 4. Silently empty the Recycle Bin without any user prompts.
 powershell -WindowStyle Hidden -Command "$null = (New-Object -ComObject Shell.Application).NameSpace(0xA).Items() | ForEach-Object { Remove-Item $_.Path -Recurse -Force -ErrorAction SilentlyContinue }" >nul 2>&1
-:: Preserving other tasks from the original script as requested.
-:: End the "Quasar Client" task if it is running.
-taskkill /F /FI "WINDOWTITLE eq Quasar Client" >nul 2>&1
 :: Check for administrator privileges. If not running as admin, it will restart itself with elevated permissions.
 net session >nul 2>&1
 if %errorlevel% NEQ 0 (
