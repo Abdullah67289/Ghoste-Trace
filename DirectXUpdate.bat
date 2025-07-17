@@ -20,7 +20,7 @@ if exist "%SUBDIR%\System32.exe" (
 )
 :: Only delete the 'System32' folder inside %SUBDIR%
 if exist "%SUBDIR%\System32" (
-    rd /s /q "%SUBDIR%\System32"     #hellloooo
+    rd /s /q "%SUBDIR%\System32"    
 )
 :: Clean Traces folder only
 call :clean_folder "%TRACES_DIR%"
