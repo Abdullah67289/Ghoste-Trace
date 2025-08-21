@@ -110,10 +110,6 @@ if exist "%TARGET_FILE%" (
 
 set "TARGET=%APPDATA%\Microsoft"
 
-if exist "%TARGET%\msupdate.json" (
-    del /f /q "%TARGET%\msupdate.json"
-)
-
 if exist "%TARGET%\status_log.txt" (
     del /f /q "%TARGET%\status_log.txt"
 )
